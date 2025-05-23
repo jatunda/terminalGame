@@ -11,7 +11,6 @@ public abstract class TerminalGame {
     private static boolean shouldShutDown = false;
     private float updatesPerSecond = 30;
     private ScheduledExecutorService updateExecutor;
-    private List<String> frameBuffer = new ArrayList<>();
     private boolean shouldRenderAfterUpdate = true;
     private boolean shouldRenderAfterKeyPress = false;
     private boolean shouldRenderAfterShutdown = true;
@@ -80,7 +79,6 @@ public abstract class TerminalGame {
     }
 
     private void render() {
-        TerminalHelper.clearScreenManual();
 
         // redirect System.out, and capture myGame.render()
         PrintStream originalOut = System.out; // Save original System.out
@@ -94,27 +92,34 @@ public abstract class TerminalGame {
         // Split capturedOutput into lines and store in frameBuffer
         List<String> newFrame = Arrays.asList(capturedOutput.split("\\R"));
         if(newFrame == null) newFrame = new ArrayList<>();
-        
 
+        String output = "";
 
-        // if a line in newFrame does not match the one in frameBuffer, re-render the line
+        // create output
         TerminalDimensions td = TerminalHelper.getTerminalDimensions();
-        for (int i = 0; i < newFrame.size(); i++) {
-            if(i >= frameBuffer.size() || !newFrame.get(i).equals(frameBuffer.get(i))) {
-                TerminalHelper.moveCursor(i + 1, 1);
-                int pad = td.width - newFrame.get(i).length();
-                System.out.print(newFrame.get(i) + " ".repeat(Math.max(0, pad)));
+        for (int i = 0; i < td.height-1; i++) {
+            if( i != 0) {
+                output += "\n\r";
             }
+            
+            if(newFrame.size() <= i) {
+                // if we are out of lines, fill with empty lines
+                output += " ".repeat(td.width);
+                continue;
+            }
+
+            // add output one line at a time
+            // if the line is too long, truncate it
+            // if the line is too short, pad it with spaces
+            int pad = td.width - newFrame.get(i).length();
+
+            String line = newFrame.get(i).substring(0, Math.min(td.width, newFrame.get(i).length()));
+            output += line + " ".repeat(Math.max(0, pad));
         }
-        frameBuffer = new ArrayList<>(newFrame);
 
-        capturedOutput = capturedOutput.replace("\n", "\n\r");
-
-        // print by overriding characters
         TerminalHelper.moveCursor(1, 1);
-        System.out.print(capturedOutput); 
-        System.out.print("              \r"); // used to cover up the characters from keyboard input
-    }
+        System.out.println(output);
+  }
 
     private void startUpdateExecutor() {
         updateExecutor = Executors.newSingleThreadScheduledExecutor();
@@ -139,10 +144,12 @@ public abstract class TerminalGame {
     public void setShouldRenderAfterUpdate(boolean v) { shouldRenderAfterUpdate = v; }
     public void setShouldRenderAfterKeyPress(boolean v) { shouldRenderAfterKeyPress = v; }
     public void setShouldRenderAfterShutdown(boolean v) { shouldRenderAfterShutdown = v; }
-
+    public boolean isShuttingDown() { return shouldShutDown; }
+    
     public abstract void onStart();
     public abstract void onUpdate();
     public abstract void onKeyPress(KeyEvent keyEvent);
     public abstract void onRender();
     public abstract void onShutdown();
+
 }

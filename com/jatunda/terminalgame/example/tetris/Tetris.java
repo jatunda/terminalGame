@@ -12,7 +12,7 @@ import com.jatunda.terminalgame.core.TerminalGame;
 
 public class Tetris extends TerminalGame {
 
-    private static final int GRID_ROWS = 20;
+    private static final int GRID_ROWS = 10;
     private static final int GRID_COLS = 10;
     private static final int START_COL = (GRID_COLS + 1) / 2 - 1;
     private static final Location START_LOCATION = new Location(1, START_COL);
@@ -373,11 +373,4 @@ public class Tetris extends TerminalGame {
         }
         return bestGhost.contains(location);
     }
-
-    // TODO: lock delay - 0.5s up to level 20, and faster after that
-    // A piece has 0.5 seconds after landing on the stack before it locks down; 
-    // for games with Master mode, the lock down delay value will decrease per level when the gravity is 20G. 
-    // With infinity, rotating or moving the piece will reset this timer. 
-    // With move reset, this is limited to 15 moves/rotations
-
 }

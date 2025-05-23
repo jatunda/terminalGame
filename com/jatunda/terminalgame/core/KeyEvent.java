@@ -9,6 +9,7 @@ public class KeyEvent {
         this.keyCode = keyCode;
     }
 
+    @Override
     public String toString() {
         return "KeyEvent{" +
                 "when=" + when +
@@ -16,6 +17,7 @@ public class KeyEvent {
                 '}';
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
