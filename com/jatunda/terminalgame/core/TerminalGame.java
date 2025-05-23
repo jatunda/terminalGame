@@ -140,12 +140,16 @@ public abstract class TerminalGame {
         startUpdateExecutor();
     }
 
+    public double getSecondsPerUpdate() {
+        return 1.0 / updatesPerSecond;
+    }
+
     public void initiateShutdown() { shouldShutDown = true; }
     public void setShouldRenderAfterUpdate(boolean v) { shouldRenderAfterUpdate = v; }
     public void setShouldRenderAfterKeyPress(boolean v) { shouldRenderAfterKeyPress = v; }
     public void setShouldRenderAfterShutdown(boolean v) { shouldRenderAfterShutdown = v; }
     public boolean isShuttingDown() { return shouldShutDown; }
-    
+
     public abstract void onStart();
     public abstract void onUpdate();
     public abstract void onKeyPress(KeyEvent keyEvent);

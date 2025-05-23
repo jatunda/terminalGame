@@ -7,7 +7,7 @@ import com.jatunda.terminalgame.core.TerminalGame;
 public class TestGame extends TerminalGame {
 
     private KeyEvent keyEvent = null;
-    private int x = 0;
+    private int frameCounter = 0;
 
     @Override
     public void onStart() {
@@ -16,8 +16,7 @@ public class TestGame extends TerminalGame {
 
     @Override
     public void onUpdate() {
-        x++;
-        
+        frameCounter++;
     }
 
     @Override
@@ -31,7 +30,8 @@ public class TestGame extends TerminalGame {
     @Override
     public void onRender() {
         System.out.println("Game render");
-        System.out.println(System.nanoTime());
+        System.out.println("Frames Elapsed: " + frameCounter);
+        System.out.println("System.nanoTime(): " + System.nanoTime());
         if(keyEvent != null) {
             System.out.println(keyEvent);
         } else {
